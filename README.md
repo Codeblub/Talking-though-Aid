@@ -4,6 +4,7 @@ A Call of Duty: mobile inspired game. The main difference is just that but you c
 
 ## Added Features
 
+- gui
 
 ## Current updates
 
