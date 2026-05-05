@@ -36,8 +36,10 @@ public class GameScreen implements Screen {
     private final Model floorModel;
     private final Model playerModel;
     private final Model botModel;
+    private final Model gunModel;
     private final ModelInstance floorInstance;
     private final ModelInstance playerInstance;
+    private final ModelInstance gunInstance;
     private final List<ModelInstance> botInstances;
     private final Environment environment;
     private final String weapon;
@@ -48,6 +50,7 @@ public class GameScreen implements Screen {
     private final float eyeHeight = 20f;
     private float yaw;
     private final Vector3 forward;
+    private boolean aiming;
     private float lastShotTime;
     private static final float SHOT_COOLDOWN = 0.5f;
 
@@ -77,6 +80,10 @@ public class GameScreen implements Screen {
 
         this.floorInstance = new ModelInstance(floorModel);
         this.playerInstance = new ModelInstance(playerModel);
+        this.gunModel = builder.createBox(80f, 20f, 15f,
+                new com.badlogic.gdx.graphics.g3d.Material(ColorAttribute.createDiffuse(Color.SKY)),
+                Usage.Position | Usage.Normal);
+        this.gunInstance = new ModelInstance(gunModel);
         this.botInstances = new ArrayList<>();
 
         this.weapon = weapon;
@@ -92,6 +99,7 @@ public class GameScreen implements Screen {
             botInstances.add(new ModelInstance(botModel));
         }
 
+        this.aiming = false;
         this.environment = new Environment();
         this.environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.7f, 0.7f, 0.7f, 1f));
         this.environment.add(new DirectionalLight().set(1f, 1f, 1f, -0.4f, -1f, -0.4f));
@@ -121,6 +129,7 @@ public class GameScreen implements Screen {
                 modelBatch.render(botInstances.get(i), environment);
             }
         }
+        modelBatch.render(gunInstance, environment);
         modelBatch.end();
 
         hudCamera.update();
@@ -134,15 +143,19 @@ public class GameScreen implements Screen {
 
         if (world.isGameOver()) {
             font.draw(batch, "GAME OVER - Winner: " + world.getWinner(), 420, 360);
-            font.draw(batch, "Tap or press ESC to return to menu", 420, 340);
+            font.draw(batch, "Click to return to menu or press ESC", 420, 340);
         } else {
-            font.draw(batch, "WASD to move, LEFT/RIGHT to turn, SPACE to shoot", 10, 50);
+            font.draw(batch, "WASD to move, LEFT/RIGHT to turn, LMB to shoot, RMB to aim", 10, 50);
+            font.draw(batch, "Aiming: " + (aiming ? "ON" : "OFF"), 10, 30);
         }
         batch.end();
 
         handleInput(delta);
 
-        if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            game.setScreen(new MainMenuScreen(game));
+        }
+        if (world.isGameOver() && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             game.setScreen(new MainMenuScreen(game));
         }
     }
@@ -156,6 +169,8 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             yaw -= 120f * delta;
         }
+
+        aiming = Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
 
         float yawRad = (float) Math.toRadians(yaw);
         forward.set((float) Math.sin(yawRad), 0, (float) -Math.cos(yawRad)).nor();
@@ -172,7 +187,7 @@ public class GameScreen implements Screen {
             world.getPlayer().move(move.x, move.z);
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && lastShotTime > SHOT_COOLDOWN) {
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && lastShotTime > SHOT_COOLDOWN) {
             shootAtNearestBot();
             lastShotTime = 0;
         }
@@ -195,6 +210,10 @@ public class GameScreen implements Screen {
             var bot = world.getBots().get(i);
             botInstances.get(i).transform.setTranslation(bot.getX(), 40f, bot.getY());
         }
+
+        Vector3 camPos = camera3D.position.cpy();
+        Vector3 gunOffset = forward.cpy().scl(40f).add(0f, -12f, 0f);
+        gunInstance.transform.setToTranslation(camPos.add(gunOffset));
     }
 
     private void shootAtNearestBot() {
@@ -258,6 +277,7 @@ public class GameScreen implements Screen {
         modelBatch.dispose();
         floorModel.dispose();
         playerModel.dispose();
+        gunModel.dispose();
         botModel.dispose();
     }
 }
