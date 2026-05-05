@@ -1,30 +1,50 @@
 package com.codeblub.talkingthroughaid.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
 import com.codeblub.talkingthroughaid.TalkingThroughAidGame;
-import com.codeblub.talkingthroughaid.game.GameWorld;
-import com.codeblub.talkingthroughaid.game.Difficulty;
 import com.codeblub.talkingthroughaid.game.Bot;
-
-import com.codeblub.talkingthroughaid.game.GameWorld;
 import com.codeblub.talkingthroughaid.game.Difficulty;
+import com.codeblub.talkingthroughaid.game.GameWorld;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameScreen implements Screen {
     private final TalkingThroughAidGame game;
     private final SpriteBatch batch;
     private final BitmapFont font;
-    private final OrthographicCamera camera;
+    private final OrthographicCamera hudCamera;
+    private final PerspectiveCamera camera3D;
+    private final ModelBatch modelBatch;
+    private final Model floorModel;
+    private final Model playerModel;
+    private final Model botModel;
+    private final ModelInstance floorInstance;
+    private final ModelInstance playerInstance;
+    private final List<ModelInstance> botInstances;
+    private final Environment environment;
     private final String weapon;
     private final String map;
     private final String character;
     private final Difficulty difficulty;
-    private GameWorld world;
+    private final GameWorld world;
     private float lastShotTime;
     private static final float SHOT_COOLDOWN = 0.5f;
 
@@ -32,14 +52,47 @@ public class GameScreen implements Screen {
         this.game = game;
         this.batch = new SpriteBatch();
         this.font = new BitmapFont();
-        this.camera = new OrthographicCamera();
-        this.camera.setToOrtho(false, 1280, 720);
+        this.hudCamera = new OrthographicCamera();
+        this.hudCamera.setToOrtho(false, 1280, 720);
+
+        this.camera3D = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.camera3D.near = 1f;
+        this.camera3D.far = 3000f;
+
+        this.modelBatch = new ModelBatch();
+        ModelBuilder builder = new ModelBuilder();
+
+        this.floorModel = builder.createBox(1280f, 4f, 720f,
+                new com.badlogic.gdx.graphics.g3d.Material(ColorAttribute.createDiffuse(Color.DARK_GRAY)),
+                Usage.Position | Usage.Normal);
+        this.playerModel = builder.createBox(40f, 80f, 40f,
+                new com.badlogic.gdx.graphics.g3d.Material(ColorAttribute.createDiffuse(Color.BLUE)),
+                Usage.Position | Usage.Normal);
+        this.botModel = builder.createBox(40f, 80f, 40f,
+                new com.badlogic.gdx.graphics.g3d.Material(ColorAttribute.createDiffuse(Color.RED)),
+                Usage.Position | Usage.Normal);
+
+        this.floorInstance = new ModelInstance(floorModel);
+        this.playerInstance = new ModelInstance(playerModel);
+        this.botInstances = new ArrayList<>();
+
         this.weapon = weapon;
         this.map = map;
         this.character = character;
         this.difficulty = difficulty;
         this.world = new GameWorld(weapon, character, map, difficulty);
         this.lastShotTime = 0;
+
+        for (int i = 0; i < world.getBots().size(); i++) {
+            botInstances.add(new ModelInstance(botModel));
+        }
+
+        this.environment = new Environment();
+        this.environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.7f, 0.7f, 0.7f, 1f));
+        this.environment.add(new DirectionalLight().set(1f, 1f, 1f, -0.4f, -1f, -0.4f));
+
+        floorInstance.transform.setTranslation(640f, -2f, 360f);
+        updateInstances();
     }
 
     @Override
@@ -49,66 +102,86 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         world.update(delta);
         lastShotTime += delta;
+        updateCamera();
+        updateInstances();
 
-        Gdx.gl.glClearColor(0.05f, 0.05f, 0.10f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Gdx.gl.glClearColor(0.08f, 0.10f, 0.14f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
-
-        // Draw map background
-        font.draw(batch, "Map: " + getMapName(map), 10, 710);
-
-        // Draw player
-        font.draw(batch, "P", world.getPlayer().getX(), world.getPlayer().getY());
-        font.draw(batch, "HP: " + (int)world.getPlayer().getHealth(), world.getPlayer().getX() - 20, world.getPlayer().getY() + 20);
-
-        // Draw bots
+        modelBatch.begin(camera3D);
+        modelBatch.render(floorInstance, environment);
+        modelBatch.render(playerInstance, environment);
         for (int i = 0; i < world.getBots().size(); i++) {
-            var bot = world.getBots().get(i);
-            if (bot.isAlive()) {
-                font.draw(batch, "B" + (i+1), bot.getX(), bot.getY());
-                font.draw(batch, "HP: " + (int)bot.getHealth(), bot.getX() - 20, bot.getY() + 20);
+            if (world.getBots().get(i).isAlive()) {
+                modelBatch.render(botInstances.get(i), environment);
             }
         }
+        modelBatch.end();
 
-        // Draw UI
+        hudCamera.update();
+        batch.setProjectionMatrix(hudCamera.combined);
+        batch.begin();
+        font.draw(batch, "Map: " + getMapName(map), 10, 710);
         font.draw(batch, "Character: " + character, 10, 680);
         font.draw(batch, "Weapon: " + getWeaponName(weapon), 10, 650);
         font.draw(batch, "Difficulty: " + difficulty, 10, 620);
 
         if (world.isGameOver()) {
-            font.draw(batch, "GAME OVER - Winner: " + world.getWinner(), 400, 400);
-            font.draw(batch, "Tap to return to menu", 400, 360);
+            font.draw(batch, "GAME OVER - Winner: " + world.getWinner(), 420, 360);
+            font.draw(batch, "Tap or press ESC to return to menu", 420, 340);
         } else {
             font.draw(batch, "WASD to move, SPACE to shoot", 10, 50);
+            font.draw(batch, "Use forward/backward and strafe for smoother movement", 10, 30);
         }
-
         batch.end();
 
-        // Input handling
-        if (!world.isGameOver()) {
-            float moveSpeed = 200 * delta;
-            if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-                world.getPlayer().move(0, moveSpeed);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-                world.getPlayer().move(0, -moveSpeed);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-                world.getPlayer().move(-moveSpeed, 0);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-                world.getPlayer().move(moveSpeed, 0);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && lastShotTime > SHOT_COOLDOWN) {
-                shootAtNearestBot();
-                lastShotTime = 0;
-            }
-        }
+        handleInput(delta);
 
         if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.setScreen(new MainMenuScreen(game));
+        }
+    }
+
+    private void handleInput(float delta) {
+        if (world.isGameOver()) return;
+
+        Vector3 forward = new Vector3(camera3D.direction.x, 0, camera3D.direction.z).nor();
+        Vector3 right = new Vector3(forward.z, 0, -forward.x).nor();
+        Vector3 move = new Vector3();
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) move.add(forward);
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) move.sub(forward);
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) move.add(right);
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) move.sub(right);
+
+        if (move.len() > 0.01f) {
+            move.nor().scl(220 * delta);
+            world.getPlayer().move(move.x, move.z);
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && lastShotTime > SHOT_COOLDOWN) {
+            shootAtNearestBot();
+            lastShotTime = 0;
+        }
+    }
+
+    private void updateCamera() {
+        float px = world.getPlayer().getX();
+        float pz = world.getPlayer().getY();
+        camera3D.position.set(px, 420f, pz + 520f);
+        camera3D.lookAt(px, 0f, pz);
+        camera3D.up.set(0f, 1f, 0f);
+        camera3D.update();
+    }
+
+    private void updateInstances() {
+        var player = world.getPlayer();
+        playerInstance.transform.setTranslation(player.getX(), 40f, player.getY());
+
+        for (int i = 0; i < world.getBots().size(); i++) {
+            var bot = world.getBots().get(i);
+            botInstances.get(i).transform.setTranslation(bot.getX(), 40f, bot.getY());
         }
     }
 
@@ -119,14 +192,16 @@ public class GameScreen implements Screen {
         Bot target = null;
         for (Bot bot : bots) {
             if (bot.isAlive()) {
-                float dist = (float) Math.sqrt(Math.pow(bot.getX() - player.getX(), 2) + Math.pow(bot.getY() - player.getY(), 2));
+                float dx = bot.getX() - player.getX();
+                float dz = bot.getY() - player.getY();
+                float dist = (float) Math.sqrt(dx * dx + dz * dz);
                 if (dist < minDist) {
                     minDist = dist;
                     target = bot;
                 }
             }
         }
-        if (target != null && minDist < 200) { // Range
+        if (target != null && minDist < 220) {
             target.takeDamage(20 + (int)(Math.random() * 10));
         }
     }
@@ -141,15 +216,18 @@ public class GameScreen implements Screen {
     }
 
     private String getMapName(String id) {
-        switch (id) {
-            case "night_street": return "Night Street";
-            default: return "Unknown";
+        if ("night_street".equals(id)) {
+            return "Night Street";
         }
+        return "Unknown";
     }
 
     @Override
     public void resize(int width, int height) {
-        camera.setToOrtho(false, width, height);
+        hudCamera.setToOrtho(false, width, height);
+        camera3D.viewportWidth = width;
+        camera3D.viewportHeight = height;
+        camera3D.update();
     }
 
     @Override
@@ -165,5 +243,9 @@ public class GameScreen implements Screen {
     public void dispose() {
         batch.dispose();
         font.dispose();
+        modelBatch.dispose();
+        floorModel.dispose();
+        playerModel.dispose();
+        botModel.dispose();
     }
 }
