@@ -1,0 +1,7 @@
+com.codeblub.talkingthroughaid.android-pngs-0 /workspaces/Talking-though-Aid/app/androiod/build/generated/res/pngs/debug
+com.codeblub.talkingthroughaid.android-updated_navigation_xml-1 /workspaces/Talking-though-Aid/app/androiod/build/generated/updated_navigation_xml/debug
+com.codeblub.talkingthroughaid.android-packageDebugResources-2 /workspaces/Talking-though-Aid/app/androiod/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.codeblub.talkingthroughaid.android-packageDebugResources-3 /workspaces/Talking-though-Aid/app/androiod/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.codeblub.talkingthroughaid.android-debug-4 /workspaces/Talking-though-Aid/app/androiod/build/intermediates/merged_res/debug/mergeDebugResources
+com.codeblub.talkingthroughaid.android-debug-5 /workspaces/Talking-though-Aid/app/androiod/src/debug/res
+com.codeblub.talkingthroughaid.android-main-6 /workspaces/Talking-though-Aid/app/androiod/src/main/res

@@ -1,0 +1,2 @@
+com.codeblub.talkingthroughaid
+string app_name

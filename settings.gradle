@@ -1,0 +1,12 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = 'talking-through-aid'
+include 'core', 'desktop', 'android', 'server'
+project(':desktop').projectDir = file('app/pc version')
+project(':android').projectDir = file('app/androiod')
+project(':server').projectDir = file('server')

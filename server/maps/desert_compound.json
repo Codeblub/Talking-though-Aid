@@ -1,0 +1,12 @@
+{
+  "id": "desert_compound",
+  "name": "Desert Compound",
+  "description": "Close-quarters compound with sand walls, roof cover, and a wide central courtyard.",
+  "size": "small",
+  "maxPlayers": 10,
+  "spawnPoints": [
+    {"x": 15, "y": 0, "z": 15},
+    {"x": 115, "y": 0, "z": 15},
+    {"x": 65, "y": 0, "z": 85}
+  ]
+}

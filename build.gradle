@@ -1,0 +1,123 @@
+plugins {
+    id 'com.android.application' version '9.0.0' apply false
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+subprojects {
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+}
+
+project(':core') {
+    apply plugin: 'java-library'
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(25))
+        }
+    }
+
+    dependencies {
+        api 'com.badlogicgames.gdx:gdx:1.11.0'
+    }
+}
+
+project(':desktop') {
+    apply plugin: 'application'
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(25))
+        }
+    }
+
+    dependencies {
+        implementation project(':core')
+        implementation 'com.badlogicgames.gdx:gdx-backend-lwjgl3:1.11.0'
+        runtimeOnly 'com.badlogicgames.gdx:gdx-platform:1.11.0:natives-desktop'
+    }
+
+    application {
+        mainClass = 'com.codeblub.talkingthroughaid.desktop.DesktopLauncher'
+    }
+
+    tasks.register('fatJar', Jar) {
+        archiveBaseName.set('TalkingThroughAid-desktop')
+        archiveClassifier.set('all')
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        manifest {
+            attributes('Main-Class': 'com.codeblub.talkingthroughaid.desktop.DesktopLauncher')
+        }
+        from(sourceSets.main.output)
+        dependsOn(configurations.runtimeClasspath)
+        from {
+            configurations.runtimeClasspath.filter { it.name.endsWith('.jar') }.collect { zipTree(it) }
+        }
+    }
+
+    tasks.register('exportExecutableJar') {
+        dependsOn(tasks.named('fatJar'))
+        doLast {
+            def outputDir = file("$rootDir/outputs/desktop")
+            outputDir.mkdirs()
+            copy {
+                from(tasks.named('fatJar').get().archiveFile)
+                into(outputDir)
+                rename { 'TalkingThroughAid-desktop.jar' }
+            }
+        }
+    }
+}
+
+project(':android') {
+    apply plugin: 'com.android.application'
+
+    android {
+        namespace 'com.codeblub.talkingthroughaid'
+        compileSdk = 34
+
+        defaultConfig {
+            applicationId 'com.codeblub.talkingthroughaid'
+            minSdk = 21
+            targetSdk = 34
+            versionCode 1
+            versionName '1.0'
+        }
+
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_17
+            targetCompatibility JavaVersion.VERSION_17
+        }
+
+        sourceSets {
+            main {
+                java.srcDirs = ['src/main/java']
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+                res.srcDirs = ['src/main/res']
+                assets.srcDirs = ['src/main/assets']
+            }
+        }
+    }
+
+    dependencies {
+        implementation project(':core')
+        implementation 'com.badlogicgames.gdx:gdx-backend-android:1.11.0'
+    }
+}
+
+project(':server') {
+    apply plugin: 'java-library'
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(25))
+        }
+    }
+}

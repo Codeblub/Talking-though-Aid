@@ -1,0 +1,12 @@
+{
+  "id": "urban_assault",
+  "name": "Urban Assault",
+  "description": "Three-lane city map with crates, alleyways and a central sniper tower.",
+  "size": "medium",
+  "maxPlayers": 12,
+  "spawnPoints": [
+    {"x": 10, "y": 0, "z": 20},
+    {"x": 120, "y": 0, "z": 20},
+    {"x": 65, "y": 0, "z": 100}
+  ]
+}

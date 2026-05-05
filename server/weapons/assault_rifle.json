@@ -1,0 +1,8 @@
+{
+  "id": "assault_rifle",
+  "name": "Falcon AR",
+  "type": "Assault",
+  "damage": 35,
+  "range": 70,
+  "fireRate": 8.5
+}

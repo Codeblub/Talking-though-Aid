@@ -1,0 +1,8 @@
+{
+  "id": "sniper",
+  "name": "Horizon SR",
+  "type": "Sniper",
+  "damage": 95,
+  "range": 120,
+  "fireRate": 1.2
+}

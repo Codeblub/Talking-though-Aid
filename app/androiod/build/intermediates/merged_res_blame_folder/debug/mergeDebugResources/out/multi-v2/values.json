@@ -1,0 +1,26 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.codeblub.talkingthroughaid.android-mergeDebugResources-1:/values/values.xml",
+            "map": [
+                {
+                    "source": "/workspaces/Talking-though-Aid/app/androiod/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "16",
+                        "endColumns": "56",
+                        "endOffsets": "68"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "56",
+                        "endOffsets": "107"
+                    }
+                }
+            ]
+        }
+    ]
+}

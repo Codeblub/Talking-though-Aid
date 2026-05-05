@@ -1,0 +1,8 @@
+{
+  "id": "smg",
+  "name": "Viper SMG",
+  "type": "SMG",
+  "damage": 24,
+  "range": 45,
+  "fireRate": 12.0
+}

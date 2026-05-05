@@ -1,0 +1,53 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.codeblub.talkingthroughaid"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:3:5-67
+11-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:3:22-64
+12
+13    <uses-feature
+13-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:4:5-90
+14        android:name="android.hardware.touchscreen"
+14-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:4:19-62
+15        android:required="false" />
+15-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:4:63-87
+16
+17    <application
+17-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:6:5-16:19
+18        android:debuggable="true"
+19        android:extractNativeLibs="true"
+20        android:label="@string/app_name"
+20-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:6:18-50
+21        android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+21-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:6:51-109
+22        <activity
+22-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:7:9-15:20
+23            android:name="com.codeblub.talkingthroughaid.android.AndroidLauncher"
+23-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:7:19-58
+24            android:configChanges="orientation|screenSize|keyboardHidden"
+24-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:10:13-74
+25            android:exported="true"
+25-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:8:13-36
+26            android:label="@string/app_name" >
+26-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:9:13-45
+27            <intent-filter>
+27-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:11:13-14:29
+28                <action android:name="android.intent.action.MAIN" />
+28-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:12:17-69
+28-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:12:25-66
+29
+30                <category android:name="android.intent.category.LAUNCHER" />
+30-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:13:17-77
+30-->/workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:13:27-74
+31            </intent-filter>
+32        </activity>
+33    </application>
+34
+35</manifest>
