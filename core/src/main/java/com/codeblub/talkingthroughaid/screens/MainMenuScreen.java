@@ -39,8 +39,7 @@ public class MainMenuScreen implements Screen {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         font.draw(batch, "Talking Through Aid", 100, 640);
-        font.draw(batch, "Call of Duty: Mobile inspired prototype", 100, 600);
-        font.draw(batch, "Choose your mode:", 100, 560);
+        font.draw(batch, "Choose your mode:", 100, 600);
         font.draw(batch, "[ SOLO TRAINING ]", buttonX + 20, buttonY + 55);
         font.draw(batch, "[ MULTIPLAYER ]", buttonX + 20, secondButtonY + 55);
         batch.end();
@@ -50,7 +49,7 @@ public class MainMenuScreen implements Screen {
             int touchY = Gdx.graphics.getHeight() - Gdx.input.getY();
             if (touchX >= buttonX && touchX <= buttonX + buttonWidth && touchY >= buttonY && touchY <= buttonY + buttonHeight) {
                 Gdx.app.log("MainMenu", "Solo button pressed");
-                game.setScreen(new GameScreen(game));
+                game.setScreen(new LoadoutScreen(game));
             } else if (touchX >= buttonX && touchX <= buttonX + buttonWidth && touchY >= secondButtonY && touchY <= secondButtonY + buttonHeight) {
                 Gdx.app.log("MainMenu", "Multiplayer button pressed");
                 game.setScreen(new MultiplayerScreen(game));

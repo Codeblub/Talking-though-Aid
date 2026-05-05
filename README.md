@@ -7,9 +7,11 @@ A Call of Duty: mobile inspired game. The main difference is just that but you c
 
 ## Current updates
 
-- weapons
-- maps
-- character designs
+- weapons: Rytech AMR (Sniper), Switchblade X9 (SMG), Striker (Shotgun)
+- character designs: Default Raptor (Assault)
+- maps: Night Street
+- login/signup system with username persistence
+- loadout selection with weapon and map choice
 - multiplayer menu and client structure
 - PC and Android cross-platform support
 

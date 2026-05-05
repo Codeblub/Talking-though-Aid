@@ -55,9 +55,9 @@ public class CrossplayManager {
 
     private List<WeaponInfo> createWeapons() {
         List<WeaponInfo> weapons = new ArrayList<>();
-        weapons.add(new WeaponInfo("assault_rifle", "Falcon AR", "Assault", 35, 70, 8.5f));
-        weapons.add(new WeaponInfo("smg", "Viper SMG", "SMG", 24, 45, 12.0f));
-        weapons.add(new WeaponInfo("sniper", "Horizon SR", "Sniper", 95, 120, 1.2f));
+        weapons.add(new WeaponInfo("rytech_amr", "Rytech AMR", "Sniper", 95, 120, 1.2f));
+        weapons.add(new WeaponInfo("switchblade_x9", "Switchblade X9", "SMG", 24, 45, 12.0f));
+        weapons.add(new WeaponInfo("striker", "Striker", "Shotgun", 35, 20, 2.5f));
         return weapons;
     }
 
