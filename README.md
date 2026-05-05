@@ -1,0 +1,2 @@
+# Talking-though-Aid
+A Call of Duty: mobile inspired game. The main difference is just that but you can play on pc too.
