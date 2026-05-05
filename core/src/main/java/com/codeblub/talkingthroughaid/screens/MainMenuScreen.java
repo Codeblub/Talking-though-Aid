@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.codeblub.talkingthroughaid.TalkingThroughAidGame;
 import com.codeblub.talkingthroughaid.screens.GameScreen;
+import com.codeblub.talkingthroughaid.screens.MultiplayerScreen;
 
 public class MainMenuScreen implements Screen {
     private final TalkingThroughAidGame game;
@@ -18,6 +19,7 @@ public class MainMenuScreen implements Screen {
     private final int buttonY = 480;
     private final int buttonWidth = 420;
     private final int buttonHeight = 80;
+    private final int secondButtonY = 360;
 
     public MainMenuScreen(TalkingThroughAidGame game) {
         this.game = game;
@@ -38,16 +40,20 @@ public class MainMenuScreen implements Screen {
         batch.begin();
         font.draw(batch, "Talking Through Aid", 100, 640);
         font.draw(batch, "Call of Duty: Mobile inspired prototype", 100, 600);
-        font.draw(batch, "Tap/click to start", 100, 560);
-        font.draw(batch, "[ START ]", buttonX + 20, buttonY + 55);
+        font.draw(batch, "Choose your mode:", 100, 560);
+        font.draw(batch, "[ SOLO TRAINING ]", buttonX + 20, buttonY + 55);
+        font.draw(batch, "[ MULTIPLAYER ]", buttonX + 20, secondButtonY + 55);
         batch.end();
 
         if (Gdx.input.justTouched()) {
             int touchX = Gdx.input.getX();
             int touchY = Gdx.graphics.getHeight() - Gdx.input.getY();
             if (touchX >= buttonX && touchX <= buttonX + buttonWidth && touchY >= buttonY && touchY <= buttonY + buttonHeight) {
-                Gdx.app.log("MainMenu", "Start button pressed");
+                Gdx.app.log("MainMenu", "Solo button pressed");
                 game.setScreen(new GameScreen(game));
+            } else if (touchX >= buttonX && touchX <= buttonX + buttonWidth && touchY >= secondButtonY && touchY <= secondButtonY + buttonHeight) {
+                Gdx.app.log("MainMenu", "Multiplayer button pressed");
+                game.setScreen(new MultiplayerScreen(game));
             }
         }
     }

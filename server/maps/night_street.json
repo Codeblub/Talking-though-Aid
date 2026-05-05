@@ -1,0 +1,12 @@
+{
+  "id": "night_street",
+  "name": "Night Street",
+  "description": "A compact urban map lit by neon signs, with alleyways, roof access, and fast flank routes.",
+  "size": "small",
+  "maxPlayers": 8,
+  "spawnPoints": [
+    {"x": 20, "y": 0, "z": 30},
+    {"x": 90, "y": 0, "z": 30},
+    {"x": 55, "y": 0, "z": 110}
+  ]
+}

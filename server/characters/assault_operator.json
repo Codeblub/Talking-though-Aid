@@ -1,0 +1,8 @@
+{
+  "id": "assault_operator",
+  "name": "Raptor",
+  "role": "Assault",
+  "health": 100,
+  "speed": 80,
+  "ability": "Rapid reload and improved recoil control"
+}

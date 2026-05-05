@@ -1,0 +1,8 @@
+{
+  "id": "sniper_operator",
+  "name": "Spectre",
+  "role": "Sniper",
+  "health": 80,
+  "speed": 70,
+  "ability": "Long-range targeting boost and reduced sway"
+}

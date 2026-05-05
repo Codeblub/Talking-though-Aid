@@ -1,0 +1,8 @@
+{
+  "id": "support_operator",
+  "name": "Medic",
+  "role": "Support",
+  "health": 90,
+  "speed": 75,
+  "ability": "Deployable heal station and radar ping"
+}

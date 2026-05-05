@@ -7,10 +7,12 @@ import java.util.List;
 public class CrossplayManager {
     private final List<MapInfo> availableMaps;
     private final List<WeaponInfo> availableWeapons;
+    private final List<CharacterInfo> availableCharacters;
 
     public CrossplayManager() {
         this.availableMaps = createMaps();
         this.availableWeapons = createWeapons();
+        this.availableCharacters = createCharacters();
     }
 
     public List<MapInfo> getAvailableMaps() {
@@ -19,6 +21,10 @@ public class CrossplayManager {
 
     public List<WeaponInfo> getAvailableWeapons() {
         return Collections.unmodifiableList(availableWeapons);
+    }
+
+    public List<CharacterInfo> getAvailableCharacters() {
+        return Collections.unmodifiableList(availableCharacters);
     }
 
     public MatchSetup createMatch(String mapId, int playerCount) {
@@ -53,5 +59,13 @@ public class CrossplayManager {
         weapons.add(new WeaponInfo("smg", "Viper SMG", "SMG", 24, 45, 12.0f));
         weapons.add(new WeaponInfo("sniper", "Horizon SR", "Sniper", 95, 120, 1.2f));
         return weapons;
+    }
+
+    private List<CharacterInfo> createCharacters() {
+        List<CharacterInfo> characters = new ArrayList<>();
+        characters.add(new CharacterInfo("assault_operator", "Raptor", "Assault", 100, 80, "Rapid reload and improved recoil control"));
+        characters.add(new CharacterInfo("sniper_operator", "Spectre", "Sniper", 80, 70, "Long-range targeting boost and reduced sway"));
+        characters.add(new CharacterInfo("support_operator", "Medic", "Support", 90, 75, "Deployable heal station and radar ping"));
+        return characters;
     }
 }
