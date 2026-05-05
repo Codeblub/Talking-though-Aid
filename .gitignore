@@ -1,0 +1,15 @@
+# Ignore local Android SDK
+android-sdk/
+
+# Ignore build outputs
+outputs/
+**/build/
+
+# Ignore local Gradle files
+local.properties
+.gradle/
+
+# Ignore OS and editor files
+.DS_Store
+.idea/
+*.iml
