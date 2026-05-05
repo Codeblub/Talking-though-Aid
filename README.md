@@ -12,9 +12,18 @@ A Call of Duty: mobile inspired game. The main difference is just that but you c
 - character designs: Default Raptor (Assault)
 - maps: Night Street
 - login/signup system with username persistence
-- loadout selection with weapon and map choice
+- loadout selection with weapon, map, and difficulty choice
+- playable solo mode vs AI bots (Easy, Normal, Hard difficulties)
 - multiplayer menu and client structure
 - PC and Android cross-platform support
+
+## How to play
+
+1. Login with a username
+2. Choose Solo Training from the menu
+3. Select your weapon, map, and difficulty in loadout
+4. Use WASD to move, SPACE to shoot
+5. Eliminate all bots to win!
 
 ## Release artifacts
 
