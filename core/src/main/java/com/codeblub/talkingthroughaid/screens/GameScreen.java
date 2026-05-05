@@ -45,6 +45,9 @@ public class GameScreen implements Screen {
     private final String character;
     private final Difficulty difficulty;
     private final GameWorld world;
+    private final float eyeHeight = 20f;
+    private float yaw;
+    private final Vector3 forward;
     private float lastShotTime;
     private static final float SHOT_COOLDOWN = 0.5f;
 
@@ -81,6 +84,8 @@ public class GameScreen implements Screen {
         this.character = character;
         this.difficulty = difficulty;
         this.world = new GameWorld(weapon, character, map, difficulty);
+        this.yaw = 0f;
+        this.forward = new Vector3(0, 0, -1);
         this.lastShotTime = 0;
 
         for (int i = 0; i < world.getBots().size(); i++) {
@@ -111,7 +116,6 @@ public class GameScreen implements Screen {
 
         modelBatch.begin(camera3D);
         modelBatch.render(floorInstance, environment);
-        modelBatch.render(playerInstance, environment);
         for (int i = 0; i < world.getBots().size(); i++) {
             if (world.getBots().get(i).isAlive()) {
                 modelBatch.render(botInstances.get(i), environment);
@@ -126,13 +130,13 @@ public class GameScreen implements Screen {
         font.draw(batch, "Character: " + character, 10, 680);
         font.draw(batch, "Weapon: " + getWeaponName(weapon), 10, 650);
         font.draw(batch, "Difficulty: " + difficulty, 10, 620);
+        font.draw(batch, "+", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f + 5);
 
         if (world.isGameOver()) {
             font.draw(batch, "GAME OVER - Winner: " + world.getWinner(), 420, 360);
             font.draw(batch, "Tap or press ESC to return to menu", 420, 340);
         } else {
-            font.draw(batch, "WASD to move, SPACE to shoot", 10, 50);
-            font.draw(batch, "Use forward/backward and strafe for smoother movement", 10, 30);
+            font.draw(batch, "WASD to move, LEFT/RIGHT to turn, SPACE to shoot", 10, 50);
         }
         batch.end();
 
@@ -146,8 +150,16 @@ public class GameScreen implements Screen {
     private void handleInput(float delta) {
         if (world.isGameOver()) return;
 
-        Vector3 forward = new Vector3(camera3D.direction.x, 0, camera3D.direction.z).nor();
-        Vector3 right = new Vector3(forward.z, 0, -forward.x).nor();
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            yaw += 120f * delta;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            yaw -= 120f * delta;
+        }
+
+        float yawRad = (float) Math.toRadians(yaw);
+        forward.set((float) Math.sin(yawRad), 0, (float) -Math.cos(yawRad)).nor();
+        Vector3 right = forward.cpy().crs(new Vector3(0f, 1f, 0f)).nor();
         Vector3 move = new Vector3();
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) move.add(forward);
@@ -169,8 +181,8 @@ public class GameScreen implements Screen {
     private void updateCamera() {
         float px = world.getPlayer().getX();
         float pz = world.getPlayer().getY();
-        camera3D.position.set(px, 420f, pz + 520f);
-        camera3D.lookAt(px, 0f, pz);
+        camera3D.position.set(px, eyeHeight, pz);
+        camera3D.direction.set(forward);
         camera3D.up.set(0f, 1f, 0f);
         camera3D.update();
     }
