@@ -40,7 +40,7 @@ ADDED from /workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.
 	android:configChanges
 		ADDED from /workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:10:13-74
 	android:name
-		ADDED from /workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:7:19-58
+		ADDED from /workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:7:19-88
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
 ADDED from /workspaces/Talking-though-Aid/app/androiod/src/main/AndroidManifest.xml:11:13-14:29
 action#android.intent.action.MAIN

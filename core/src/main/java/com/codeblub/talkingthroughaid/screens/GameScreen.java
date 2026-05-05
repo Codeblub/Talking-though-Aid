@@ -6,20 +6,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.Input;
 import com.codeblub.talkingthroughaid.TalkingThroughAidGame;
-import com.codeblub.talkingthroughaid.screens.GameScreen;
 
-public class MainMenuScreen implements Screen {
+public class GameScreen implements Screen {
     private final TalkingThroughAidGame game;
     private final SpriteBatch batch;
     private final BitmapFont font;
     private final OrthographicCamera camera;
-    private final int buttonX = 100;
-    private final int buttonY = 480;
-    private final int buttonWidth = 420;
-    private final int buttonHeight = 80;
 
-    public MainMenuScreen(TalkingThroughAidGame game) {
+    public GameScreen(TalkingThroughAidGame game) {
         this.game = game;
         this.batch = new SpriteBatch();
         this.font = new BitmapFont();
@@ -32,23 +28,18 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.08f, 0.08f, 0.08f, 1);
+        Gdx.gl.glClearColor(0.05f, 0.05f, 0.10f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        font.draw(batch, "Talking Through Aid", 100, 640);
-        font.draw(batch, "Call of Duty: Mobile inspired prototype", 100, 600);
-        font.draw(batch, "Tap/click to start", 100, 560);
-        font.draw(batch, "[ START ]", buttonX + 20, buttonY + 55);
+        font.draw(batch, "Game started!", 100, 660);
+        font.draw(batch, "This is the shared play screen.", 100, 620);
+        font.draw(batch, "Tap/click anywhere to return to menu.", 100, 580);
         batch.end();
 
-        if (Gdx.input.justTouched()) {
-            int touchX = Gdx.input.getX();
-            int touchY = Gdx.graphics.getHeight() - Gdx.input.getY();
-            if (touchX >= buttonX && touchX <= buttonX + buttonWidth && touchY >= buttonY && touchY <= buttonY + buttonHeight) {
-                Gdx.app.log("MainMenu", "Start button pressed");
-                game.setScreen(new GameScreen(game));
-            }
+        if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            game.setScreen(new MainMenuScreen(game));
         }
     }
 
